@@ -1,7 +1,11 @@
 /* eslint-disable react/prop-types */
 import { UserRow } from "./UserRow";
 
-export const UsersList = ({ users }) => {
+export const UsersList = ({
+  users = [],
+  handlerRemoveUser,
+  handlerUserSelectedForm,
+}) => {
   return (
     <table className="table table-hober table-striped">
       <thead>
@@ -14,12 +18,14 @@ export const UsersList = ({ users }) => {
         </tr>
       </thead>
       <tbody>
-        {users.map(({id, username, email}) => (
+        {users.map(({ id, username, email }) => (
           <UserRow
             key={id}
             id={id}
             username={username}
             email={email}
+            handlerRemoveUser={handlerRemoveUser}
+            handlerUserSelectedForm={handlerUserSelectedForm}
           />
         ))}
       </tbody>
