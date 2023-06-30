@@ -1,49 +1,25 @@
-import { UserForm } from "./components/UserForm";
-import { UsersList } from "./components/UsersList";
-import { useUsers } from "./hooks/useUsers";
+import { LoginPage } from "./auth/pages/LoginPage";
+import { useAuth } from "./auth/hooks/useAuth";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { UserRoutes } from "./routes/UserRoutes";
 
 export const UsersApp = () => {
-  const {
-    users,
-    userSelected,
-    initialUserForm,
-    visibleForm,
-    handlerAddUser,
-    handlerRemoveUser,
-    handlerUserSelectedForm,
-    handlerOpenForm,
-    handlerCloseForm
-  } = useUsers();
+  const { handlerLogin, handlerLogout, login } = useAuth();
 
   return (
-    <div className="container my-4">
-      <h2>Users App</h2>
-      <div className="row">
-        {visibleForm && (
-          <div className="col">
-            <UserForm
-              userSelected={userSelected}
-              initialUserForm={initialUserForm}
-              handlerAddUser={handlerAddUser}
-              handlerCloseForm={handlerCloseForm}
-            />
-          </div>
-        )}
-        <div className="col">
-          {!visibleForm && (
-            <button className="btn btn-primary my-2" onClick={handlerOpenForm}>Agregar usuarios</button>
-          )}
-          {users.length > 0 ? (
-            <UsersList
-              users={users}
-              handlerRemoveUser={handlerRemoveUser}
-              handlerUserSelectedForm={handlerUserSelectedForm}
-            />
-          ) : (
-            <div className="alert alert-warning">No hay usuarios</div>
-          )}
-        </div>
-      </div>
-    </div>
+    <Routes>
+      {login.isAuth ? (
+        <Route
+          path="/*"
+          element={<UserRoutes handlerLogout={handlerLogout} login={login} />}
+        />
+      ) : (
+        <>
+          <Route path="/login" element={<LoginPage handlerLogin={handlerLogin} />} />
+          <Route path="/*" element={<Navigate to="/login" />}/>
+        </> 
+      )
+    }
+    </Routes>
   );
 };
