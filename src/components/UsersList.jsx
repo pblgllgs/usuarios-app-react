@@ -14,6 +14,7 @@ export const UsersList = ({
           <th>username</th>
           <th>email</th>
           <th>update</th>
+          <th>update Route</th>
           <th>remove</th>
         </tr>
       </thead>

@@ -11,7 +11,7 @@ const initialLogin = JSON.parse(sessionStorage.getItem("login")) || {
 
 export const useAuth = () => {
   const [login, dispatch] = useReducer(loginReducer, initialLogin);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handlerLogin = ({ username, password }) => {
     const isLogin = loginUser({ username, password });
     if (isLogin) {
@@ -27,7 +27,7 @@ export const useAuth = () => {
           user,
         })
       );
-      navigate('/users')
+      navigate("/users");
       Swal.fire("Login", "Bienvenido", "success");
     } else {
       Swal.fire(
