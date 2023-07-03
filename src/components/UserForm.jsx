@@ -1,13 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { UserContext } from "../context/UserContext";
 
-export const UserForm = ({
-  handlerAddUser,
-  initialUserForm,
-  userSelected,
-  handlerCloseForm,
-}) => {
+export const UserForm = ({ userSelected, handlerCloseForm }) => {
+  const { handlerAddUser, initialUserForm } = useContext(UserContext);
   const [userForm, setUserForm] = useState(initialUserForm);
 
   const { id, username, password, email } = userForm;
@@ -30,7 +27,7 @@ export const UserForm = ({
       Swal.fire("Error de validación", "Debe completar los campos", "error");
       return;
     }
-    if(!email.includes("@")) {
+    if (!email.includes("@")) {
       Swal.fire("Error de validación", "El email debe ser válido", "error");
       return;
     }

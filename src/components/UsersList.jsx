@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import { UserRow } from "./UserRow";
 
-export const UsersList = ({
-  users = [],
-  handlerRemoveUser,
-  handlerUserSelectedForm,
-}) => {
+export const UsersList = () => {
+  const { users } =
+    useContext(UserContext);
   return (
     <table className="table table-hober table-striped">
       <thead>
@@ -25,8 +25,6 @@ export const UsersList = ({
             id={id}
             username={username}
             email={email}
-            handlerRemoveUser={handlerRemoveUser}
-            handlerUserSelectedForm={handlerUserSelectedForm}
           />
         ))}
       </tbody>
