@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import axios from "axios";
 
 const BASE_URL = "http://localhost:8080/users";
@@ -20,9 +21,8 @@ export const save = async ({ username, email, password }) => {
       password,
     });
   } catch (error) {
-    console.log(error);
+    throw error;
   }
-  return undefined;
 };
 
 export const update = async ({ username, email, id }) => {
@@ -32,12 +32,11 @@ export const update = async ({ username, email, id }) => {
       email,
     });
   } catch (error) {
-    console.log(error);
+    throw error;
   }
-  return undefined;
 };
 
-export const remove = async ( id ) => {
+export const remove = async (id) => {
   try {
     await axios.delete(`${BASE_URL}/${id}`);
   } catch (error) {
