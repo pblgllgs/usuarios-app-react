@@ -29,7 +29,7 @@ export const update = async ({ username, email, id }) => {
   try {
     return await axios.put(`${BASE_URL}/${id}`, {
       username,
-      email,
+      email
     });
   } catch (error) {
     throw error;
