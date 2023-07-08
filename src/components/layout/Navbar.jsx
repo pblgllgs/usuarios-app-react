@@ -30,11 +30,13 @@ export const Navbar = () => {
                 Usuarios
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/users/register">
-                Registro
-              </NavLink>
-            </li>
+            {!login.isAdmin || (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/users/register">
+                  Registro
+                </NavLink>
+              </li>
+            )}
           </ul>
         </div>
 

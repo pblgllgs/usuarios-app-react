@@ -1,8 +1,9 @@
-import { useReducer, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import { usersReducer } from "../reducers/usersReducer";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { findAll, remove, save, update } from "../services/userService";
+import { AuthContext } from "../auth/context/AuthContext";
 
 const initialUsers = [];
 
@@ -24,6 +25,7 @@ export const useUsers = () => {
   const [userSelected, setUserSelected] = useState(initialUserForm);
   const [visibleForm, setVisibleForm] = useState(false);
   const [errors, setErrors] = useState(initialErrors);
+  const { login, handlerLogout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const getUsers = async () => {
@@ -35,6 +37,9 @@ export const useUsers = () => {
   };
 
   const handlerAddUser = async (user) => {
+    if (!login.isAdmin) {
+      return;
+    }
     let response;
     try {
       if (user.id === 0) {
@@ -64,12 +69,15 @@ export const useUsers = () => {
         error.response.status === 500 &&
         error.response.data?.message?.includes("constraint")
       ) {
-        if(error.response.data?.message?.includes("UK_username")){
-          setErrors({username:'El username ya existe'})
+        if (error.response.data?.message?.includes("UK_username")) {
+          setErrors({ username: "El username ya existe" });
         }
-        if(error.response.data?.message?.includes("UK_email")){
-          setErrors({email:'El email ya existe'})
+        if (error.response.data?.message?.includes("UK_email")) {
+          setErrors({ email: "El email ya existe" });
         }
+      } else if (error.response?.status === 401) {
+        Swal.fire("Error!", "La sesión ya no es válida, vuelva  a inciar sesión", "error");
+        handlerLogout();
       } else {
         throw error;
       }
@@ -77,6 +85,9 @@ export const useUsers = () => {
   };
 
   const handlerRemoveUser = (id) => {
+    if (!login.isAdmin) {
+      return;
+    }
     Swal.fire({
       title: "Estas seguro?",
       text: "Esta acción no se puede revertir!",
@@ -87,12 +98,19 @@ export const useUsers = () => {
       confirmButtonText: "Si, eliminar!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await remove(id);
-        dispatch({
-          type: "removeUser",
-          payload: id,
-        });
-        Swal.fire("Eliminado!", "El usuario fue eliminado.", "success");
+        try {
+          await remove(id);
+          dispatch({
+            type: "removeUser",
+            payload: id,
+          });
+          Swal.fire("Eliminado!", "El usuario fue eliminado.", "success");
+        } catch (error) {
+          if (error.response?.status === 401) {
+            Swal.fire("Error!", "La sesión ya no es válida, vuelva  a inciar sesión", "error");
+            handlerLogout();
+          }
+        }
       }
     });
   };

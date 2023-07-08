@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { UserForm } from "../components/UserForm";
-import { useParams } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { useParams } from "react-router-dom";
 
 export const RegisterPage = () => {
   const {
