@@ -12,6 +12,7 @@ const initialUserForm = {
   username: "",
   password: "",
   email: "",
+  admin: false,
 };
 
 const initialErrors = {
@@ -29,11 +30,22 @@ export const useUsers = () => {
   const navigate = useNavigate();
 
   const getUsers = async () => {
-    const result = await findAll();
-    dispatch({
-      type: "loadingUsers",
-      payload: result.data,
-    });
+    try {
+      const result = await findAll();
+      dispatch({
+        type: "loadingUsers",
+        payload: result.data,
+      });
+    } catch (error) {
+      if (error.response?.status === 401) {
+        Swal.fire(
+          "Error!",
+          "La sesión ya no es válida, vuelva  a inciar sesión",
+          "error"
+        );
+        handlerLogout();
+      }
+    }
   };
 
   const handlerAddUser = async (user) => {
@@ -76,7 +88,11 @@ export const useUsers = () => {
           setErrors({ email: "El email ya existe" });
         }
       } else if (error.response?.status === 401) {
-        Swal.fire("Error!", "La sesión ya no es válida, vuelva  a inciar sesión", "error");
+        Swal.fire(
+          "Error!",
+          "La sesión ya no es válida, vuelva  a inciar sesión",
+          "error"
+        );
         handlerLogout();
       } else {
         throw error;
@@ -107,7 +123,11 @@ export const useUsers = () => {
           Swal.fire("Eliminado!", "El usuario fue eliminado.", "success");
         } catch (error) {
           if (error.response?.status === 401) {
-            Swal.fire("Error!", "La sesión ya no es válida, vuelva  a inciar sesión", "error");
+            Swal.fire(
+              "Error!",
+              "La sesión ya no es válida, vuelva  a inciar sesión",
+              "error"
+            );
             handlerLogout();
           }
         }
