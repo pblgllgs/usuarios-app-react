@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
-import { loginReducer } from "../../reducers/loginReducer";
 import { useReducer } from "react";
 import { loginUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import { loginReducer } from "../reducers/loginReducer";
 
 const initialLogin = JSON.parse(sessionStorage.getItem("login")) || {
   isAuth: false,
