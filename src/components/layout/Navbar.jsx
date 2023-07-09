@@ -1,10 +1,9 @@
 import { NavLink } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../auth/context/AuthContext";
+import { useAuth } from "../../auth/hooks/useAuth";
 /* eslint-disable react/prop-types */
 
 export const Navbar = () => {
-  const { handlerLogout, login } = useContext(AuthContext);
+  const { handlerLogout, login } = useAuth();
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -45,7 +44,7 @@ export const Navbar = () => {
           id="navbarNavLogout"
         >
           <span className="nav-item nav-link text-primary mx-3">
-            {login.user.username}
+            {login.user?.username}
           </span>
           <button className="btn btn-outline-success" onClick={handlerLogout}>
             Logout

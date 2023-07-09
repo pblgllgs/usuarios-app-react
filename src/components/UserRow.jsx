@@ -1,14 +1,12 @@
 /* eslint-disable react/prop-types */
-
-import { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
-import { AuthContext } from "../auth/context/AuthContext";
+import { useUsers } from "../hooks/useUsers";
+import { useAuth } from "../auth/hooks/useAuth";
 
 export const UserRow = ({ id, username, email, admin }) => {
-  const { handlerRemoveUser, handlerUserSelectedForm } =
-    useContext(UserContext);
-    const { login } = useContext(AuthContext);
+  const { handlerRemoveUser, handlerUserSelectedForm } = useUsers();
+
+  const { login } = useAuth();
   return (
     <tr>
       <td>{id}</td>
@@ -25,7 +23,7 @@ export const UserRow = ({ id, username, email, admin }) => {
                   id,
                   username,
                   email,
-                  admin
+                  admin,
                 })
               }
             >

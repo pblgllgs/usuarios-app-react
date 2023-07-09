@@ -1,17 +1,13 @@
 import Swal from "sweetalert2";
-import { loginReducer } from "../../reducers/loginReducer";
-import { useReducer } from "react";
 import { loginUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
-
-const initialLogin = JSON.parse(sessionStorage.getItem("login")) || {
-  isAuth: false,
-  isAdmin: false,
-  user: undefined,
-};
+import { useDispatch, useSelector } from "react-redux";
+import { onLogin, onLogout } from "../../store/slices/auth/authSlice";
 
 export const useAuth = () => {
-  const [login, dispatch] = useReducer(loginReducer, initialLogin);
+  const dispatch = useDispatch();
+  const { user, isAdmin, isAuth } = useSelector((state) => state.auth);
+  
   const navigate = useNavigate();
   const handlerLogin = async ({ username, password }) => {
     try {
@@ -19,13 +15,12 @@ export const useAuth = () => {
       const token = response.data.token;
       const claims = JSON.parse(window.atob(token.split(".")[1]));
       const user = { username: claims.username };
-      dispatch({
-        type: "login",
-        payload: {
+      dispatch(
+        onLogin({
           user,
           isAdmin: claims.isAdmin,
-        },
-      });
+        })
+      );
       sessionStorage.setItem("token", `Bearer ${token}`);
       sessionStorage.setItem(
         "login",
@@ -45,11 +40,7 @@ export const useAuth = () => {
           "error"
         );
       } else if (e.response?.status === 403) {
-        Swal.fire(
-          "Error",
-          "Permisos insuficientes",
-          "error"
-        );
+        Swal.fire("Error", "Permisos insuficientes", "error");
       } else {
         throw new Error();
       }
@@ -57,9 +48,7 @@ export const useAuth = () => {
   };
 
   const handlerLogout = () => {
-    dispatch({
-      type: "logout",
-    });
+    dispatch(onLogout());
     sessionStorage.removeItem("login");
     sessionStorage.removeItem("token");
     sessionStorage.clear();
@@ -67,6 +56,6 @@ export const useAuth = () => {
   return {
     handlerLogin,
     handlerLogout,
-    login,
+    login: { user, isAdmin, isAuth },
   };
 };

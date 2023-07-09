@@ -1,14 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UserForm } from "../components/UserForm";
-import { UserContext } from "../context/UserContext";
 import { useParams } from "react-router-dom";
+import { useUsers } from "../hooks/useUsers";
 
 export const RegisterPage = () => {
   const {
     initialUserForm,
     users = [],
-  } = useContext(UserContext);
+  } = useUsers();
   const [userSelected, setUserSelected] = useState(initialUserForm);
 
   const { id } = useParams();

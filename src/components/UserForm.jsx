@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../context/UserContext";
+import { useEffect, useState } from "react";
+import { useUsers } from "../hooks/useUsers";
 
 export const UserForm = ({ userSelected, handlerCloseForm }) => {
-  const { handlerAddUser, initialUserForm, errors } = useContext(UserContext);
+  const { handlerAddUser, initialUserForm, errors } = useUsers();
+
   const [userForm, setUserForm] = useState(initialUserForm);
   const [checked, setChecked] = useState(userForm.admin);
+  
   const { id, username, password, email, admin } = userForm;
 
   useEffect(() => {
@@ -22,15 +24,6 @@ export const UserForm = ({ userSelected, handlerCloseForm }) => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    // if (!username || (!password && id === 0) || !email) {
-    //   Swal.fire("Error de validación", "Debe completar los campos", "error");
-    //   return;
-    // }
-    // if (!email.includes("@")) {
-    //   Swal.fire("Error de validación", "El email debe ser válido", "error");
-    //   return;
-    // }
-
     handlerAddUser(userForm);
   };
 
