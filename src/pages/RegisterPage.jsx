@@ -18,11 +18,11 @@ export const RegisterPage = () => {
       const user = users.find((user) => user.id == id) || initialUserForm;
       setUserSelected(user);
     }
-  }, [id, initialUserForm, users]);
+  }, [id]);
 
   return (
     <div className="container my-4">
-      <h4>{id === undefined ? "Registro" : "Editar"} de usuarios</h4>
+      <h4>{userSelected.id === undefined ? "Registro" : "Editar"} de usuarios</h4>
       <div className="row">
         <div className="col">
           <UserForm
