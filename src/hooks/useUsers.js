@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { findAll, remove, save, update } from "../services/userService";
+import { findAllPages, remove, save, update } from "../services/userService";
 import { useDispatch, useSelector } from "react-redux";
 import {
   initialUserForm,
@@ -11,20 +11,22 @@ import {
   updateUser,
   onUserSelectedForm,
   onOpenForm,
-  onCloseForm
+  onCloseForm,
 } from "../store/slices/users/usersSlice";
 import { useAuth } from "../auth/hooks/useAuth";
 
 export const useUsers = () => {
-  const { users, userSelected, visibleForm, errors } = useSelector((state) => state.users);
+  const { users, userSelected, visibleForm, errors, paginator } = useSelector(
+    (state) => state.users
+  );
   const dispatch = useDispatch();
 
   const { login, handlerLogout } = useAuth();
   const navigate = useNavigate();
 
-  const getUsers = async () => {
+  const getUsers = async (page = 0) => {
     try {
-      const result = await findAll();
+      const result = await findAllPages(page);
       dispatch(loadingUsers(result.data));
     } catch (error) {
       if (error.response?.status === 401) {
@@ -46,7 +48,7 @@ export const useUsers = () => {
     try {
       if (user.id === 0) {
         response = await save(user);
-        dispatch(addUser(response.data ));
+        dispatch(addUser(response.data));
       } else {
         response = await update(user);
         dispatch(updateUser(response.data));
@@ -121,17 +123,16 @@ export const useUsers = () => {
   };
 
   const handlerUserSelectedForm = (user) => {
-    dispatch(onUserSelectedForm(user))
+    dispatch(onUserSelectedForm(user));
   };
 
   const handlerOpenForm = () => {
-    dispatch(onOpenForm())
+    dispatch(onOpenForm());
   };
 
   const handlerCloseForm = () => {
     dispatch(onCloseForm());
     dispatch(loadingError({}));
-    
   };
 
   return {
@@ -140,6 +141,7 @@ export const useUsers = () => {
     initialUserForm,
     visibleForm,
     errors,
+    paginator,
     handlerOpenForm,
     handlerCloseForm,
     handlerAddUser,

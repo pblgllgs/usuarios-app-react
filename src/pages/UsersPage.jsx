@@ -4,16 +4,18 @@ import { UserModalForm } from "../components/UserModalForm";
 import { UsersList } from "../components/UsersList";
 import { useUsers } from "../hooks/useUsers";
 import { useAuth } from "../auth/hooks/useAuth";
+import { useParams } from "react-router-dom";
+import { Paginator } from "../components/Paginator";
 
 export const UsersPage = () => {
-  const { users, visibleForm, handlerOpenForm, getUsers } =
-    useUsers();
+  const { page } = useParams();
+  const { users, visibleForm, handlerOpenForm, getUsers, paginator } = useUsers();
 
   const { login } = useAuth();
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    getUsers(page);
+  }, [page]);
 
   return (
     <>
@@ -22,7 +24,7 @@ export const UsersPage = () => {
         <h2>Users App</h2>
         <div className="row">
           <div className="col">
-            {(visibleForm || !login.isAdmin) ||  (
+            {visibleForm || !login.isAdmin || (
               <button
                 className="btn btn-primary my-2"
                 onClick={handlerOpenForm}
@@ -31,7 +33,10 @@ export const UsersPage = () => {
               </button>
             )}
             {users.length > 0 ? (
-              <UsersList />
+              <>
+                <UsersList />
+                <Paginator paginator={paginator} url="/users/page" />
+              </>
             ) : (
               <div className="alert alert-warning">No hay usuarios</div>
             )}
